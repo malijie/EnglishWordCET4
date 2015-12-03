@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/vic_ma/AndroidStudioProjects/EnglishWordCET4/EnglishWordCET4/libs/AppOffer_2.2.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="ede33a9223235e32cd2c47b6fb32271f9dd78117">
+        <dex dex="/Users/vic_ma/AndroidStudioProjects/EnglishWordCET4/EnglishWordCET4/build/intermediates/pre-dexed/debug/AppOffer_2.2.0-146fbf98044ad6c96787b3edebcc9c266976fbad.jar" />
+    </item>
+    <item
+        jar="/Users/vic_ma/AndroidStudioProjects/EnglishWordCET4/EnglishWordCET4/libs/android-support-v4.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="efec67655f6db90757faa37201efcee2a9ec3507">
+        <dex dex="/Users/vic_ma/AndroidStudioProjects/EnglishWordCET4/EnglishWordCET4/build/intermediates/pre-dexed/debug/android-support-v4-277e82b12541ace03a6457276b1e9c3b73759e8b.jar" />
+    </item>
+
+</items>

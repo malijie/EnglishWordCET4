@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="/Users/vic_ma/AndroidStudioProjects/EnglishWordCET4/EnglishWordCET4/assets"><file name="english.db" path="/Users/vic_ma/AndroidStudioProjects/EnglishWordCET4/EnglishWordCET4/assets/english.db"/></source></dataSet><dataSet config="debug"><source path="/Users/vic_ma/AndroidStudioProjects/EnglishWordCET4/EnglishWordCET4/build-types/debug/assets"/></dataSet></merger>
