@@ -31,6 +31,7 @@ public class UnknownWordActivity extends Activity{
 	private EnglishDatabaseHelper eHelper = null;
 	private EnglishDBOperate eOperate = null;
 	private UnknownWordsAdapter uAdapter = null;
+
  	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +57,7 @@ public class UnknownWordActivity extends Activity{
 				it.putExtra("wordinfo", mWordInfo);
 				startActivity(it);
 			}
-		}); 
+		});
 		
 	}
 
@@ -86,5 +87,5 @@ public class UnknownWordActivity extends Activity{
 		uAdapter = new UnknownWordsAdapter(UnknownWordActivity.this, uWordsList);
 		unknownListView.setAdapter(uAdapter);
 	}
-	
+
 }

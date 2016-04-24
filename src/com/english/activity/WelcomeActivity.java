@@ -11,11 +11,18 @@ import android.view.animation.Animation.AnimationListener;
 import android.widget.ImageView;
 import cn.waps.AppConnect;
 
+import com.english.English;
 import com.english.ad.AdUtil;
 import com.english.cet4.R;
+import com.english.config.Config;
+import com.english.config.Const;
 import com.english.util.FileUtil;
+import com.english.util.Logger;
+import com.english.util.SharedPreferenceUtil;
+import com.english.util.Util;
 
 public class WelcomeActivity extends Activity{ 
+	private static final String TAG = WelcomeActivity.class.getSimpleName();
 
 	private ImageView imgBackgroud = null;
 	
@@ -58,5 +65,23 @@ public class WelcomeActivity extends Activity{
 	
 	private void initData() {
 		FileUtil.copyDB2Phone(WelcomeActivity.this);
+        //解压单词到sd卡
+        handleUnzipWordsEvent();
+	}
+
+	/**
+	 * 解压单词到SD卡
+	 */
+	private void handleUnzipWordsEvent() {
+		boolean isZiped = SharedPreferenceUtil.getWordsUnzipStatus(English.mContext);
+
+		//已经解压过就不再解压了
+		if(isZiped){
+			Logger.d(TAG, "words.zip already have been unziped...");
+			return;
+		}
+
+		Util.unZipFile2SdCard(WelcomeActivity.this,
+				Const.UNZIP_WORDS_FILE_NAME, Config.UNZIP_WORDS_FILE_PATH);
 	}
 }

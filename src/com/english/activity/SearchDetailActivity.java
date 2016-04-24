@@ -15,6 +15,7 @@ import com.english.ad.AdUtil;
 import com.english.cet4.R;
 import com.english.database.EnglishDBOperate;
 import com.english.database.EnglishDatabaseHelper;
+import com.english.media.EnglishMediaPlayer;
 import com.english.model.WordInfo;
 
 public class SearchDetailActivity extends Activity implements OnClickListener{
@@ -25,11 +26,14 @@ public class SearchDetailActivity extends Activity implements OnClickListener{
 	private LinearLayout ad1Layout = null;
 	private LinearLayout ad2Layout = null;
 	private ImageButton buttonAdd = null;
+    private ImageButton buttonPlay = null;
 	private WordInfo wordInfo = null;
 	private EnglishDatabaseHelper eHelper = null;
 	private EnglishDBOperate eOperate = null;
-	
-	@Override
+    private EnglishMediaPlayer mPlayer = null;
+
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.search_detail_layout);
@@ -62,13 +66,17 @@ public class SearchDetailActivity extends Activity implements OnClickListener{
 		buttonAdd = (ImageButton) super.findViewById(R.id.search_detail_button_add);
 		textExample1.setMovementMethod(ScrollingMovementMethod.getInstance());
 		textContent.setMovementMethod(ScrollingMovementMethod.getInstance());
-		
-		buttonAdd.setOnClickListener(this);
+        buttonPlay = (ImageButton)findViewById(R.id.search_detail_button_volume);
+
+        buttonPlay.setOnClickListener(this);
+        buttonAdd.setOnClickListener(this);
 	}
 	
 	private void initData(){
 		wordInfo = (WordInfo) getIntent().getSerializableExtra("word_info");
-	}
+        mPlayer = EnglishMediaPlayer.getInstance(this);
+
+    }
 
 	@Override
 	public void onClick(View v) {
@@ -77,6 +85,8 @@ public class SearchDetailActivity extends Activity implements OnClickListener{
 			eOperate.updateWordIsKnownById(false, wordInfo.getId());
 			Toast.makeText(SearchDetailActivity.this, "已添加到生词库", Toast.LENGTH_SHORT).show();
 			break;
+        case R.id.search_detail_button_volume:
+            mPlayer.playTheWordTune(wordInfo.getWord());
 		}
 	}
 
@@ -86,7 +96,8 @@ public class SearchDetailActivity extends Activity implements OnClickListener{
 			eHelper.close();
 			eHelper = null;
 		}
-		super.onDestroy();
+        mPlayer.stopPlay();
+        super.onDestroy();
 	}
 	
 	

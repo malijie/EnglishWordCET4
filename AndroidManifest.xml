@@ -21,7 +21,8 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/icon"
-        android:label="@string/app_name">
+        android:label="@string/app_name"
+        android:name="com.english.English">
         <activity
             android:name="com.english.activity.WelcomeActivity"
             android:label="@string/app_name" >

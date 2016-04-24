@@ -8,6 +8,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import com.english.ad.AdUtil;
 import com.english.cet4.R;
 import com.english.database.EnglishDBOperate;
 import com.english.database.EnglishDatabaseHelper;
+import com.english.media.EnglishMediaPlayer;
 import com.english.model.WordInfo;
 
 public class UnknownWordDetailActivity extends Activity implements OnClickListener{
@@ -25,12 +27,17 @@ public class UnknownWordDetailActivity extends Activity implements OnClickListen
 	private TextView textContent = null;
 	private TextView textExample = null;
  	private Button butDelete = null;
+    //单词音频
+    private ImageButton buttonVoice = null;
  	private LinearLayout adLayout = null;
  	private EnglishDatabaseHelper eHelper = null;
  	private EnglishDBOperate eOperate = null;
  	private boolean isDeleted = false;
- 	
-	@Override
+
+    private EnglishMediaPlayer mPlayer = null;
+
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.unknown_words_detail_layout);
@@ -57,6 +64,8 @@ public class UnknownWordDetailActivity extends Activity implements OnClickListen
 		textContent = (TextView) super.findViewById(R.id.unkonwn_words_detail_text_content);
 		butDelete = (Button) super.findViewById(R.id.unkonwn_words_detail_button_delete);
 		adLayout = (LinearLayout) super.findViewById(R.id.unkonwn_words_detail_layout_ad);
+        buttonVoice = (ImageButton) super.findViewById(R.id.unkonwn_words_detail_button_volume);
+        buttonVoice.setOnClickListener(this);
 		butDelete.setOnClickListener(this);
 	}
 
@@ -64,6 +73,7 @@ public class UnknownWordDetailActivity extends Activity implements OnClickListen
 		mWordInfo = (WordInfo) getIntent().getSerializableExtra("wordinfo");
 		eHelper = new EnglishDatabaseHelper(this);
 		eOperate = new EnglishDBOperate(eHelper.getWritableDatabase(), this);
+        mPlayer = EnglishMediaPlayer.getInstance(UnknownWordDetailActivity.this);
 	}
 
 	@Override
@@ -78,8 +88,10 @@ public class UnknownWordDetailActivity extends Activity implements OnClickListen
 				Intent it = new Intent(UnknownWordDetailActivity.this,UnknownWordActivity.class);
 				startActivity(it);	
 				UnknownWordDetailActivity.this.finish();
-			} 
-			break;
+			}
+            case R.id.unkonwn_words_detail_button_volume:
+                mPlayer.playTheWordTune(mWordInfo.getWord());
+                break;
 		}
 	}
 
@@ -90,6 +102,8 @@ public class UnknownWordDetailActivity extends Activity implements OnClickListen
 			eHelper = null;
 		}
 		super.onDestroy();
+
+        mPlayer.stopPlay();
 	}
 	
 }

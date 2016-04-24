@@ -13,6 +13,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.english.cet4.R;
 import com.english.database.EnglishDBOperate;
 import com.english.database.EnglishDatabaseHelper;
+import com.english.media.EnglishMediaPlayer;
 import com.english.model.WordInfo;
 import com.english.util.SharedPreferenceUtil;
 
@@ -45,6 +47,7 @@ public class WordsDetailActivity extends Activity implements OnClickListener{
 	private Button butNotKnown = null;
 	private Button butRight = null;
 	private Button butWrong = null;
+	private ImageButton butSound = null;
 
 	private int index;
 	private int lessonNum;
@@ -56,7 +59,7 @@ public class WordsDetailActivity extends Activity implements OnClickListener{
 	private EnglishDBOperate eOperate = null;
 
 	private SharedPreferenceUtil mSpUtil = null;
-	
+	private EnglishMediaPlayer mEnglishMediaPlayer = null;
 	 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +94,9 @@ public class WordsDetailActivity extends Activity implements OnClickListener{
 		sDateFormat = getSimpleDateFormatInstance();
 		mSpUtil= new SharedPreferenceUtil(this);
 		index = mSpUtil.loadWordProgress(lessonNum);
+
+		mEnglishMediaPlayer = EnglishMediaPlayer.getInstance(this);
+
 	}
 	
 	private SimpleDateFormat getSimpleDateFormatInstance(){
@@ -121,7 +127,9 @@ public class WordsDetailActivity extends Activity implements OnClickListener{
 		butNotKnown = (Button) super.findViewById(R.id.word_detail_button_notknown);
 		butRight = (Button) super.findViewById(R.id.word_detail_button_right);
 		butWrong = (Button) super.findViewById(R.id.word_detail_button_wrong);
-		
+		butSound = (ImageButton) super.findViewById(R.id.word_detail_button_volume);
+
+
 		butNext.setOnClickListener(this);
 		txtExample1.setOnClickListener(this);
 		txtExample2.setOnClickListener(this); 
@@ -129,6 +137,7 @@ public class WordsDetailActivity extends Activity implements OnClickListener{
 		butNotKnown.setOnClickListener(this);
 		butRight.setOnClickListener(this);
 		butWrong.setOnClickListener(this);
+        butSound.setOnClickListener(this);
 		
 		SharedPreferenceUtil spUtil = new SharedPreferenceUtil(this);
 		txtWord.setTextSize(spUtil.getFontSize("word_size"));
@@ -167,6 +176,9 @@ public class WordsDetailActivity extends Activity implements OnClickListener{
 			showWordsKnownOrNotUI(); 
 			showNextWord(); 
 			break;
+		case R.id.word_detail_button_volume:
+				//播放单词音频
+				mEnglishMediaPlayer.playTheWordTune(mWordInfo.getWord());
 		case R.id.word_detail_add:
 			
 			break;
@@ -307,4 +319,9 @@ public class WordsDetailActivity extends Activity implements OnClickListener{
 		super.onPause();
 	}
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mEnglishMediaPlayer.stopPlay();
+    }
 }
