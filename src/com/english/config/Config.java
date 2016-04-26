@@ -7,7 +7,7 @@ import java.io.File;
 /**
  * Created by vic_ma on 15/10/8.
  */
-public class Config {
+    public class Config {
 
     //µ¥´Ê½âÑ¹Â·¾¶
     public static final String UNZIP_WORDS_FILE_PATH = Environment.getExternalStorageDirectory()
