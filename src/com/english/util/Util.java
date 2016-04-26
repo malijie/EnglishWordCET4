@@ -1,10 +1,17 @@
 package com.english.util;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.english.English;
+import com.english.cet4.R;
 import com.english.config.Const;
+import com.english.inter.IDialogOnClickListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -180,56 +187,56 @@ public class Util {
 //				         .getDeviceId(English.mContext);
 //	}
 //
-//	/**
-//	 * 根据资源文件获取view
-//	 * @param res
-//	 * @return
-//	 */
-//	public static View getView(int res){
-//		LayoutInflater inflater = LayoutInflater.from(English.mContext);
-//		View v = inflater.inflate(res,null);
-//		return  v;
-//	}
-//
-//	/**
-//	 * 弹出对话框
-//	 * @param title	对话框标题
-//	 * @param msg 对话框内容
-//	 * @param listener 点击确定事件
-//	 */
-//	public static void showAlertDialog(Context context,String title, String msg, final IDialogOnClickListener listener){
-//		AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.DialogTheme);
-//
-//		View v = Util.getView(R.layout.alert_dialog_layout);
-//		builder.setView(v);
-//
-//		Button buttonConfirm = (Button) v.findViewById(R.id.dialog_button_confirm);
-//		Button buttonCancel = (Button) v.findViewById(R.id.dialog_button_cancel);
-//		TextView textTitle = (TextView) v.findViewById(R.id.dialog_text_title);
-//		TextView textMsg = (TextView) v.findViewById(R.id.dialog_text_content);
-//
-//		textTitle.setText(title);
-//		textMsg.setText(msg);
-//
-//		final AlertDialog dialog = builder.create();
-//		//退出
-//		buttonConfirm.setOnClickListener(new View.OnClickListener() {
-//			@Override
-//			public void onClick(View view) {
-//				if(listener != null){
-//					listener.onClick();
-//					dialog.dismiss();
-//				}
-//			}
-//		});
-//		//取消
-//		buttonCancel.setOnClickListener(new View.OnClickListener() {
-//			@Override
-//			public void onClick(View view) {
-//				dialog.dismiss();
-//			}
-//		});
-//		dialog.show();
-//	}
+	/**
+	 * 根据资源文件获取view
+	 * @param res
+	 * @return
+	 */
+	public static View getView(int res){
+		LayoutInflater inflater = LayoutInflater.from(English.mContext);
+		View v = inflater.inflate(res,null);
+		return  v;
+	}
+
+	/**
+	 * 弹出对话框
+	 * @param title	对话框标题
+	 * @param msg 对话框内容
+	 * @param listener 点击确定事件
+	 */
+	public static void showAlertDialog(Context context,String title, String msg, final IDialogOnClickListener listener){
+		AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTheme);
+
+		View v = Util.getView(R.layout.alert_dialog_layout);
+		builder.setView(v);
+
+		Button buttonConfirm = (Button) v.findViewById(R.id.dialog_button_confirm);
+		Button buttonCancel = (Button) v.findViewById(R.id.dialog_button_cancel);
+		TextView textTitle = (TextView) v.findViewById(R.id.dialog_text_title);
+		TextView textMsg = (TextView) v.findViewById(R.id.dialog_text_content);
+
+		textTitle.setText(title);
+		textMsg.setText(msg);
+
+		final AlertDialog dialog = builder.create();
+		//退出
+		buttonConfirm.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				if(listener != null){
+					listener.onClick();
+					dialog.dismiss();
+				}
+			}
+		});
+		//取消
+		buttonCancel.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				dialog.dismiss();
+			}
+		});
+		dialog.show();
+	}
 
 }

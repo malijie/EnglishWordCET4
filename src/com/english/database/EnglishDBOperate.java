@@ -29,7 +29,7 @@ public class EnglishDBOperate {
 	
 	/**
 	 * 
-	 * @return ·µ»Ø¿Î³Ì×ÜÊı
+	 * @return ï¿½ï¿½ï¿½Ø¿Î³ï¿½ï¿½ï¿½ï¿½ï¿½
 	 */
 
 	public int getLessonsSize(){
@@ -56,12 +56,22 @@ public class EnglishDBOperate {
 		
 		return Integer.parseInt(strCount);
 	}
-	
-	
+
+    /**
+     * å°†å½“å‰è¯¾ç¨‹çš„æ­£ç¡®ç‡ç½®ä¸º0
+     * @param index  è¯¾ç¨‹å·
+     */
+    public void resumeAccuracyCount(int index){
+        db.beginTransaction();
+        String sql = "update vocabulary set is_known='false' where id between " + (index*100+1) + " and " + (index*100+100);
+        db.execSQL(sql);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
 	
 	/**
-	 * ¸ù¾İ´«ÈëµÄ¿Î³ÌºÅ£¬²é³öĞèÒªÏÔÊ¾µÄÊı¾İ
-	 * @param lesson ¿Î³ÌºÅ
+	 * ï¿½ï¿½İ´ï¿½ï¿½ï¿½Ä¿Î³ÌºÅ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½
+	 * @param lesson ï¿½Î³Ìºï¿½
 	 * @return
 	 */
 	public List<Map<String, String>> getWordsListByLesson(int lesson){
@@ -96,8 +106,8 @@ public class EnglishDBOperate {
 	
 	
 	/**
-	 * ¸ù¾İid²éÕÒµ¥´Ê
-	 * @return µ¥´Ê
+	 * ï¿½ï¿½ï¿½idï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½
+	 * @return ï¿½ï¿½ï¿½ï¿½
 	 */
 	public WordInfo getWordById(int index){
 		
@@ -129,8 +139,8 @@ public class EnglishDBOperate {
 	}
 	
 	/**
-	 * ¸ù¾İ¿Î³ÌºÅ²é³ö±¾¿Î³ÌÖĞµ¥´ÊĞÅÏ¢
-	 * @param lesson¿Î³ÌºÅ
+	 * ï¿½ï¿½İ¿Î³ÌºÅ²ï¿½ï¿½ï¿½ï¿½ï¿½Î³ï¿½ï¿½Ğµï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+	 * @param lessonï¿½Î³Ìºï¿½
 	 * @return
 	 */
 	public List<WordInfo> getWordsByLesson(int lesson){
@@ -163,8 +173,8 @@ public class EnglishDBOperate {
 	}
 	
 	/**
-	 * ¸üĞÂµ¥´ÊÊÇ·ñÎªÉú´Ê×´Ì¬
-	 * @param id idºÅ
+	 * ï¿½ï¿½ï¿½Âµï¿½ï¿½ï¿½ï¿½Ç·ï¿½Îªï¿½ï¿½ï¿½×´Ì¬
+	 * @param id idï¿½ï¿½
 	 */
 	public void updateWordIsStrangerById(boolean isStranger, int index){
 		db.beginTransaction();
@@ -174,7 +184,7 @@ public class EnglishDBOperate {
 			db.execSQL(sql);
 			db.setTransactionSuccessful();
 		}catch(Exception e){
-			Toast.makeText(context, "Sorry,ÉèÖÃÊ§°Ü£¬ÇëÉÔºóÔÙÊÔ...", Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, "Sorry,ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½Ôºï¿½ï¿½ï¿½ï¿½ï¿½...", Toast.LENGTH_SHORT).show();
 		}finally{
 			db.endTransaction();
 		}
@@ -182,18 +192,18 @@ public class EnglishDBOperate {
 	} 
 	 
 	/**
-	 * ¸üĞÂµ¥´ÊÊÇ·ñÎª´í´Ê×´Ì¬
-	 * @param index lessonWordsÖĞµÄĞòºÅ
+	 * ï¿½ï¿½ï¿½Âµï¿½ï¿½ï¿½ï¿½Ç·ï¿½Îªï¿½ï¿½ï¿½×´Ì¬
+	 * @param index lessonWordsï¿½Ğµï¿½ï¿½ï¿½ï¿½
 	 */
 	public void updateWordIsKnownByIndex(boolean isKnown, int index){
 		db.beginTransaction();
 		try{ 
-			int id = index + 1; //lessonWordsÖĞindexÆğÊ¼Î»ÖÃÎª0£¬ Êı¾İ¿âÖĞidÆğÊ¼Î»ÖÃÎª1£¬ËùÒÔĞèÒª+1
+			int id = index + 1; //lessonWordsï¿½ï¿½indexï¿½ï¿½Ê¼Î»ï¿½ï¿½Îª0ï¿½ï¿½ ï¿½ï¿½İ¿ï¿½ï¿½ï¿½idï¿½ï¿½Ê¼Î»ï¿½ï¿½Îª1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òª+1
 			String sql = UPDATE_WORDS + " is_known='" + isKnown + "' WHERE ID=" + id;
 			db.execSQL(sql); 
 			db.setTransactionSuccessful();
 		}catch(Exception e){
-			Toast.makeText(context, "Sorry,ÉèÖÃÊ§°Ü£¬ÇëÉÔºóÔÙÊÔ...", Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, "Sorry,ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½Ôºï¿½ï¿½ï¿½ï¿½ï¿½...", Toast.LENGTH_SHORT).show();
 		}finally{
 			db.endTransaction();
 		}
@@ -207,16 +217,16 @@ public class EnglishDBOperate {
 			db.execSQL(sql);
 			db.setTransactionSuccessful();
 		}catch(Exception e){
-			Toast.makeText(context, "Sorry,ÉèÖÃÊ§°Ü£¬ÇëÉÔºóÔÙÊÔ...", Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, "Sorry,ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½Ôºï¿½ï¿½ï¿½ï¿½ï¿½...", Toast.LENGTH_SHORT).show();
 		}finally{
 			db.endTransaction();
 		}
 	}
 	
 	/**
-	 * ¸ü¼Óid¸üĞÂµ¥´Ê×î½ü·ÃÎÊÊ±¼ä
-	 * @param date ×î½ü·ÃÎÊÊ±¼ä 
-	 * @param id µ¥´Êid 
+	 * ï¿½ï¿½ï¿½idï¿½ï¿½ï¿½Âµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
+	 * @param date ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ 
+	 * @param id ï¿½ï¿½ï¿½ï¿½id 
 	 */
 	public void updateLastVisitDateById(String date, int id){
 		db.beginTransaction();
@@ -226,16 +236,16 @@ public class EnglishDBOperate {
 			db.setTransactionSuccessful();
 		}catch(Exception e){
 			e.printStackTrace();
-			Toast.makeText(context, "Sorry,ÉèÖÃÊ§°Ü£¬ÇëÉÔºóÔÙÊÔ...", Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, "Sorry,ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½Ôºï¿½ï¿½ï¿½ï¿½ï¿½...", Toast.LENGTH_SHORT).show();
 		}finally{
 			db.endTransaction(); 
 		}
 	}
 	
 	/**
-	 * ¸ù¾İ¿Î³ÌºÅ²éÑ¯³ö±¾¿ÎÖĞ×î½ü´ò¿ªÊ±¼ä
-	 * @param lesson ¿Î³ÌºÅ
-	 * @return ËùÓĞ¿Î³Ì×î½ü´ò¿ªÊ±¼ä¼¯ºÏ
+	 * ï¿½ï¿½İ¿Î³ÌºÅ²ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
+	 * @param lesson ï¿½Î³Ìºï¿½
+	 * @return ï¿½ï¿½ï¿½Ğ¿Î³ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ä¼¯ï¿½ï¿½
 	 */
 	public List<String> getLastVisitDateListByLesson(int lesson){
 		List<String> dateList = null;
@@ -265,7 +275,7 @@ public class EnglishDBOperate {
 	}
 	
 	/**
-	 * ¸ù¾İ¿Î³ÌºÅ²éÑ¯Ã¿¿ÎÖĞµÚÒ»¸öµ¥´ÊµÄµ¥´Ê£¬Òô±êÒÔ¼°½âÊÍ
+	 * ï¿½ï¿½İ¿Î³ÌºÅ²ï¿½Ñ¯Ã¿ï¿½ï¿½ï¿½Ğµï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ÊµÄµï¿½ï¿½Ê£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½
 	 */
 	public List<Map<String,String>> getAbstractListByLesson(int lesson){
 		List<Map<String,String>> abList = null;
@@ -302,8 +312,8 @@ public class EnglishDBOperate {
 	
 	/**
 	 * 
-	 * @param lesson ¿Î³ÌºÅ
-	 * @return Ã¿¿ÎÖĞ»Ø´ğÕıÈ·µÄµ¥´ÊÊı
+	 * @param lesson ï¿½Î³Ìºï¿½
+	 * @return Ã¿ï¿½ï¿½ï¿½Ğ»Ø´ï¿½ï¿½ï¿½È·ï¿½Äµï¿½ï¿½ï¿½ï¿½ï¿½
 	 */
 	public List<Integer> getAccuracyCountByListen(int lesson){
 		List<Integer> acList = null;
@@ -333,7 +343,7 @@ public class EnglishDBOperate {
 	
 	/**
 	 * 
-	 * @return ·µ»ØËùÓĞÉú´Ê
+	 * @return ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	 */
 	public List<WordInfo> getAllUnknownWords(){
 		List<WordInfo> uWordsList = null;
@@ -368,7 +378,7 @@ System.out.println("uWord-->" + uWord);
 	}
 	
 	/**
-	 * ¸ù¾İidÖµ¸üĞÂÉú´Ê×´Ì¬
+	 * ï¿½ï¿½ï¿½idÖµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬
 	 */
 	public void updateUnknownWordStatusById(int id){
 		String sql = "";
@@ -421,7 +431,7 @@ System.out.println("uWord-->" + uWord);
 	
 	/**
 	 * 
-	 * ËùÓĞĞ´×÷ĞÅÏ¢
+	 * ï¿½ï¿½ï¿½ï¿½Ğ´ï¿½ï¿½ï¿½ï¿½Ï¢
 	 * @return
 	 */
 	public List<WrittingInfo> getAllWrittingInfoByDate(){
@@ -480,7 +490,7 @@ System.out.println("uWord-->" + uWord);
 				isFoundInWord = false; 
 				isFoundInContent = false;
 			}
-			if(isFoundInWord){//µ¥´ÊÄ£ºı²éÑ¯
+			if(isFoundInWord){//ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½Ñ¯
 				sql = "select * from vocabulary where word like '" + keyWord + "%'";
 				result2 = db.rawQuery(sql, null);
 				for(result2.moveToFirst(); !result2.isAfterLast(); result2.moveToNext()){
@@ -495,7 +505,7 @@ System.out.println("uWord-->" + uWord);
 					
 				} 
 			}
-			if(isFoundInContent){//²éÕÒµ¥´ÊÖĞÎÄÒâÒå
+			if(isFoundInContent){//ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				sql = "select * from vocabulary where content like '%" + keyWord + "%'";
 				result3 = db.rawQuery(sql, null);
 				for(result3.moveToFirst(); !result3.isAfterLast(); result3.moveToNext()){

@@ -10,6 +10,13 @@ public class SharedPreferenceUtil {
 	private Context mContext = null;
 	private final String SP_WORD_PROGRESS = "word_progress";
 	private final String SP_WORD_PROGRESS_KEY = "lesson";
+
+    //SharePreference名称
+    private static final String PREF_DATA_NAME = "english_lesson_data";
+
+    //sp课程名称key
+    private static final String PREF_LESSON_KEY = "lesson";
+
 	//解压状态sp
 	private static final String PREF_UNZIP_NAME = "english_unzip_status";
 	//sp单词解压记录
@@ -56,7 +63,6 @@ public class SharedPreferenceUtil {
 	 * @return
 	 */
 	public static boolean getWordsUnzipStatus(Context context){
-Logger.d("MLJ","context=" + context);
 		return context.getSharedPreferences(PREF_UNZIP_NAME,Context.MODE_PRIVATE).getBoolean(PREF_WORDS_UNZIP_STATUS_KEY, false);
 	}
 	/**
@@ -67,5 +73,25 @@ Logger.d("MLJ","context=" + context);
 	public static void saveUnzipWordsStatus(Context context,boolean result){
 		context.getSharedPreferences(PREF_UNZIP_NAME,Context.MODE_PRIVATE).edit().putBoolean(PREF_WORDS_UNZIP_STATUS_KEY,result).commit();
 	}
+
+    /**
+     * 保存当前课程进度
+     * @param lessonNum 课程
+     * @param progress 当前单词进度
+     */
+    public static void saveLessonProgress(Context context, int lessonNum, int progress){
+        context.getSharedPreferences(PREF_DATA_NAME,Context.MODE_PRIVATE).edit().putInt(PREF_LESSON_KEY + lessonNum,progress).commit();
+    }
+
+    /**
+     * 读取当前课程进度
+     * @param context
+     * @param lessonNum
+     * @return
+     */
+    public static int loadLessonProgress(Context context,int lessonNum){
+        return context.getSharedPreferences(PREF_DATA_NAME,Context.MODE_PRIVATE).getInt(PREF_LESSON_KEY + lessonNum,0);
+    }
+
 
 }

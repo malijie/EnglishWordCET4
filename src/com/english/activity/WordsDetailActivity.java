@@ -19,12 +19,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.english.English;
 import com.english.cet4.R;
 import com.english.database.EnglishDBOperate;
 import com.english.database.EnglishDatabaseHelper;
+import com.english.inter.IDialogOnClickListener;
 import com.english.media.EnglishMediaPlayer;
 import com.english.model.WordInfo;
+import com.english.util.Logger;
 import com.english.util.SharedPreferenceUtil;
+import com.english.util.Util;
 
 public class WordsDetailActivity extends Activity implements OnClickListener{
 	private TextView txtWord = null;
@@ -48,9 +52,11 @@ public class WordsDetailActivity extends Activity implements OnClickListener{
 	private Button butRight = null;
 	private Button butWrong = null;
 	private ImageButton butSound = null;
+    private ImageButton butGoHead = null;
 
-	private int index;
+	private int progress;
 	private int lessonNum;
+    private boolean mIsGoHead = false;
 	private List<WordInfo> lessonWords = null; 
 	private WordInfo mWordInfo = null;
 	private static SimpleDateFormat sDateFormat = null;
@@ -58,10 +64,9 @@ public class WordsDetailActivity extends Activity implements OnClickListener{
 	private EnglishDatabaseHelper eHelper = null;
 	private EnglishDBOperate eOperate = null;
 
-	private SharedPreferenceUtil mSpUtil = null;
 	private EnglishMediaPlayer mEnglishMediaPlayer = null;
-	 
-	@Override
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.words_detail_layout);
@@ -70,7 +75,7 @@ public class WordsDetailActivity extends Activity implements OnClickListener{
 		initDatabase();
 		initView();
 		showWordsKnownOrNotUI();
-		setWordData(index);
+		setWordData(progress);
 		
 	}
 	
@@ -87,15 +92,16 @@ public class WordsDetailActivity extends Activity implements OnClickListener{
 	
 
 	private void initData() {
+        mIsGoHead = true;
 		lessonNum = getIntent().getIntExtra("lesson_num", 0);
 		lessonWords = (List<WordInfo>) getIntent().getSerializableExtra("lesson_words");
 //		index = getIntent().getIntExtra("index", 0);
 
 		sDateFormat = getSimpleDateFormatInstance();
-		mSpUtil= new SharedPreferenceUtil(this);
-		index = mSpUtil.loadWordProgress(lessonNum);
+        progress = SharedPreferenceUtil.loadLessonProgress(WordsDetailActivity.this, lessonNum);
+        Logger.d("MLJ", "initData= progress==" + progress);
 
-		mEnglishMediaPlayer = EnglishMediaPlayer.getInstance(this);
+        mEnglishMediaPlayer = EnglishMediaPlayer.getInstance(this);
 
 	}
 	
@@ -128,6 +134,7 @@ public class WordsDetailActivity extends Activity implements OnClickListener{
 		butRight = (Button) super.findViewById(R.id.word_detail_button_right);
 		butWrong = (Button) super.findViewById(R.id.word_detail_button_wrong);
 		butSound = (ImageButton) super.findViewById(R.id.word_detail_button_volume);
+        butGoHead = (ImageButton) super.findViewById(R.id.word_detail_button_gohaed);
 
 
 		butNext.setOnClickListener(this);
@@ -138,7 +145,8 @@ public class WordsDetailActivity extends Activity implements OnClickListener{
 		butRight.setOnClickListener(this);
 		butWrong.setOnClickListener(this);
         butSound.setOnClickListener(this);
-		
+        butGoHead.setOnClickListener(this);
+
 		SharedPreferenceUtil spUtil = new SharedPreferenceUtil(this);
 		txtWord.setTextSize(spUtil.getFontSize("word_size"));
 		
@@ -164,7 +172,7 @@ public class WordsDetailActivity extends Activity implements OnClickListener{
 		case R.id.word_detail_button_notknown:
 			eOperate.updateWordIsKnownById(false, mWordInfo.getId());
 			showNextWordUI();
-			setWordData(index);
+			setWordData(progress);
 			break;
 		case R.id.word_detail_button_right:
 			eOperate.updateWordIsKnownById(true, mWordInfo.getId());
@@ -179,7 +187,25 @@ public class WordsDetailActivity extends Activity implements OnClickListener{
 		case R.id.word_detail_button_volume:
 				//播放单词音频
 				mEnglishMediaPlayer.playTheWordTune(mWordInfo.getWord());
-		case R.id.word_detail_add:
+
+        case R.id.word_detail_button_gohaed:
+            //从头开始学习
+            Util.showAlertDialog(WordsDetailActivity.this,
+                    "从头开始学习", "当前学习进度将不会保存，确定这么做吗？", new IDialogOnClickListener() {
+                        @Override
+                        public void onClick() {
+                            mIsGoHead = true;
+                            //当前课程正确率清0
+                            eOperate.resumeAccuracyCount(lessonNum);
+                            //将当前课程的进度置为0
+                            SharedPreferenceUtil.saveLessonProgress(English.mContext, lessonNum, 0);
+                            //关闭当前Activity
+                            WordsDetailActivity.this.finish();
+                        }
+                    });
+
+            break;
+            case R.id.word_detail_add:
 			
 			break;
 			
@@ -187,8 +213,8 @@ public class WordsDetailActivity extends Activity implements OnClickListener{
 	}
 	
 	private void showNextWord(){
-		index ++;
-		setWordData(index);
+        progress ++;
+		setWordData(progress);
 	}
 	
 	/**
@@ -238,33 +264,32 @@ public class WordsDetailActivity extends Activity implements OnClickListener{
 	
 	private void showExampleDetail(){
 		Intent it = new Intent(WordsDetailActivity.this, WordExampleDetailActivity.class);
-		it.putExtra("id", lessonWords.get(index).getId());
-		it.putExtra("symbols", lessonWords.get(index).getSymbols());
-		it.putExtra("word", lessonWords.get(index).getWord());
-		it.putExtra("content", lessonWords.get(index).getContent());
-		it.putExtra("example", lessonWords.get(index).getExample());
+		it.putExtra("id", lessonWords.get(progress).getId());
+		it.putExtra("symbols", lessonWords.get(progress).getSymbols());
+		it.putExtra("word", lessonWords.get(progress).getWord());
+		it.putExtra("content", lessonWords.get(progress).getContent());
+		it.putExtra("example", lessonWords.get(progress).getExample());
 		startActivity(it);
 	}
-	
-	/**
-	 * 设置单词
-	 * @param mIndex
-	 */
-	private void setWordData(int mIndex){
-		if(mIndex > lessonWords.size()-1){
-			Toast.makeText(WordsDetailActivity.this, "暂时没有单词信息", Toast.LENGTH_SHORT).show();
-			return;
-		}
-		mWordInfo = lessonWords.get(mIndex);
-		txtSymbols.setText(lessonWords.get(mIndex).getSymbols());
-		txtWord.setText(lessonWords.get(mIndex).getWord());
-		txtContent.setText(lessonWords.get(mIndex).getContent());
-		txtProgress.setText("Lesson " + (lessonNum + 1) + "  (" + (index + 1) + "/" + lessonWords.size() + ")");
-		setExampleData(lessonWords.get(mIndex).getExample());
-		updateLastVisitDate(mWordInfo.getId());
-		
-	}
-	
+
+    /**
+     * 为控件设置数据
+     * @param mIndex
+     */
+    private void setWordData(int mIndex){
+        if(mIndex > lessonWords.size()-1){
+            Toast.makeText(WordsDetailActivity.this, "本课单词已学习结束，请选择下一课。", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mWordInfo = lessonWords.get(mIndex);
+        txtSymbols.setText(lessonWords.get(mIndex).getSymbols());
+        txtWord.setText(lessonWords.get(mIndex).getWord());
+        txtContent.setText(lessonWords.get(mIndex).getContent());
+        txtProgress.setText("Lesson " + (lessonNum + 1) + "  (" + (progress + 1) + "/" + lessonWords.size() + ")");
+        setExampleData(lessonWords.get(mIndex).getExample());
+        updateLastVisitDate(mWordInfo.getId());
+    }
+
 	private void updateLastVisitDate(int id) {
 		String date = sDateFormat.format(new Date());
 		eOperate.updateLastVisitDateById(date, id);
@@ -310,12 +335,14 @@ public class WordsDetailActivity extends Activity implements OnClickListener{
 	 * 保存单词进度
 	 */
 	private void saveWordProgress(){
-		mSpUtil.saveWordProgress(lessonNum,index);
+		SharedPreferenceUtil.saveLessonProgress(English.mContext,lessonNum, progress);
 	}
 
 	@Override
 	protected void onPause() {
-		saveWordProgress();
+        if(!mIsGoHead){
+            saveWordProgress();
+        }
 		super.onPause();
 	}
 
@@ -323,5 +350,7 @@ public class WordsDetailActivity extends Activity implements OnClickListener{
     protected void onStop() {
         super.onStop();
         mEnglishMediaPlayer.stopPlay();
+        mIsGoHead = false;
+
     }
 }
